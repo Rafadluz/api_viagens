@@ -28,3 +28,12 @@ async def atualizar_corrida(id: int, dados: CorridaSchema, db: Session = Depends
     db.commit()
     db.refresh(corrida_existente)
     return corrida_existente
+
+@corrida.delete("/corridas/{id}")
+async def deletar_corrida(id: int, db: Session = Depends(get_db)):
+    corrida_existente = db.query(CorridaModel).filter(CorridaModel.id_corrida == id).first()
+    if not corrida_existente:
+        return {"mensagem": "Corrida não encontrada"}
+    db.delete(corrida_existente)
+    db.commit()
+    return {"mensagem": "Corrida deletada com sucesso"}

@@ -58,3 +58,12 @@ async def atualizar_avaliacao(id: int, id_avaliacao: int, dados: AvaliacaoSchema
     db.commit()
     db.refresh(avaliacao_existente)
     return avaliacao_existente
+
+@servico.delete("/servicos/{id}")
+async def deletar_servico(id: int, db: Session = Depends(get_db)):
+    servico_existente = db.query(ServicoModel).filter(ServicoModel.id_servico == id).first()
+    if not servico_existente:
+        return {"mensagem": "Serviço não encontrado"}
+    db.delete(servico_existente)
+    db.commit()
+    return {"mensagem": "Serviço deletado com sucesso"}

@@ -44,3 +44,12 @@ async def atualizar_pagamento(id: int, dados_pagamento: PagamentoSchema, dados_m
     db.refresh(pagamento_existente)
     db.refresh(metodo_existente)
     return {"pagamento": pagamento_existente, "metodo": metodo_existente}
+
+@pagamento.delete("/pagamentos/{id}")
+async def deletar_pagamento(id: int, db: Session = Depends(get_db)):
+    pagamento_existente = db.query(PagamentoModel).filter(PagamentoModel.id_pagamento == id).first()
+    if not pagamento_existente:
+        return {"mensagem": "Pagamento não encontrado"}
+    db.delete(pagamento_existente)
+    db.commit()
+    return {"mensagem": "Pagamento deletado com sucesso"}

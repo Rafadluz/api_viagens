@@ -10,25 +10,14 @@ usuario = APIRouter()
 @usuario.post("/usuarios")
 async def criar_usuario(dados: UsuarioSchema, db: Session = Depends(get_db)):
     novo_usuario = UsuarioModel(**dados.model_dump())
-    db.add(novo_usuario)
-    db.commit()
-    db.refresh(novo_usuario)
+    db.add(novo_usuario)  # adicionar o objeto na sessão
+    db.commit() # grava no banco
+    db.refresh(novo_usuario) # atualiza o objeto com os dados salvos
     return novo_usuario
 
-@usuario.get("/usuarios")
+@usuario.get("/usuarios") # busca no banco de dados
 async def listar_usuarios(db: Session = Depends(get_db)):
     return db.query(UsuarioModel).all()
-
-@usuario.put("/usuarios/{id}/update")
-async def atualizar_usuario(id: int, dados: UsuarioSchema, db: Session = Depends(get_db)):
-    usuario_existente = db.query(UsuarioModel).filter(UsuarioModel.id_usuario == id).first()
-    if not usuario_existente:
-        return {"mensagem": "Usuário não encontrado"}
-    for campo, valor in dados.model_dump().items():
-        setattr(usuario_existente, campo, valor)
-    db.commit()
-    db.refresh(usuario_existente)
-    return usuario_existente
 
 
 @usuario.post("/usuarios/{id}/passageiro")
@@ -52,3 +41,25 @@ async def criar_motorista(id: int, dados: MotoristaSchema, db: Session = Depends
     db.commit()
     db.refresh(novo_motorista)
     return novo_motorista
+
+
+@usuario.put("/usuarios/{id}/update") # atualiza os dados
+async def atualizar_usuario(id: int, dados: UsuarioSchema, db: Session = Depends(get_db)):
+    usuario_existente = db.query(UsuarioModel).filter(UsuarioModel.id_usuario == id).first()
+    if not usuario_existente:
+        return {"mensagem": "Usuário não encontrado"}
+    for campo, valor in dados.model_dump().items():
+        setattr(usuario_existente, campo, valor)
+    db.commit()
+    db.refresh(usuario_existente)
+    return usuario_existente
+
+
+@usuario.delete("/usuarios/{id}")
+async def deletar_usuario(id: int, db: Session = Depends(get_db)):
+    usuario_existente = db.query(UsuarioModel).filter(UsuarioModel.id_usuario == id).first()
+    if not usuario_existente:
+        return {"mensagem": "Usuário não encontrado"}
+    db.delete(usuario_existente)
+    db.commit()
+    return {"mensagem": "Usuário deletado com sucesso"}

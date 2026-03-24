@@ -7,7 +7,6 @@ from app.schema.viagens import VeiculoSchema, ModeloVeiculoSchema
 
 veiculo = APIRouter()
 
-
 @veiculo.post("/")
 async def criar_veiculo(dados_veiculo: VeiculoSchema, dados_modelo: ModeloVeiculoSchema, db: Session = Depends(get_db)):
     novo_modelo = ModeloVeiculoModel(**dados_modelo.model_dump())
@@ -17,19 +16,19 @@ async def criar_veiculo(dados_veiculo: VeiculoSchema, dados_modelo: ModeloVeicul
 
     novo_veiculo = VeiculoModel(**dados_veiculo.model_dump(), id_modelo=novo_modelo.id_modelo)
     db.add(novo_veiculo)
-    db.commit()
-    db.refresh(novo_veiculo)
+    db.commit() 
+    db.refresh(novo_veiculo) 
     return {"veiculo": novo_veiculo, "modelo": novo_modelo}
 
 
-@veiculo.get("/veiculos")
+@veiculo.get("/veiculos") 
 async def listar_veiculos(db: Session = Depends(get_db)):
     veiculos = db.query(VeiculoModel).all()
     modelos = db.query(ModeloVeiculoModel).all()
     return {"veiculos": veiculos, "modelos": modelos}
 
 
-@veiculo.put("/veiculos/{id}/update")
+@veiculo.put("/veiculos/{id}/update") 
 async def atualizar_veiculo(id: int, dados_veiculo: VeiculoSchema, dados_modelo: ModeloVeiculoSchema, db: Session = Depends(get_db)):
     veiculo_existente = db.query(VeiculoModel).filter(VeiculoModel.id_veiculo == id).first()
     if not veiculo_existente:
@@ -47,3 +46,13 @@ async def atualizar_veiculo(id: int, dados_veiculo: VeiculoSchema, dados_modelo:
     db.refresh(veiculo_existente)
     db.refresh(modelo_existente)
     return {"veiculo": veiculo_existente, "modelo": modelo_existente}
+
+
+@veiculo.delete("/veiculos/{id}")
+async def deletar_veiculo(id: int, db: Session = Depends(get_db)):
+    veiculo_existente = db.query(VeiculoModel).filter(VeiculoModel.id_veiculo == id).first()
+    if not veiculo_existente:
+        return {"mensagem": "Veículo não encontrado"}
+    db.delete(veiculo_existente)
+    db.commit()
+    return {"mensagem": "Veículo deletado com sucesso"}

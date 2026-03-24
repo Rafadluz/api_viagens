@@ -7,7 +7,7 @@ from app.route.servico import servico
 from app.route.pagamento import pagamento
 
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine) # cria todas as tabelas definidas e executa no banco
 
 
 app = FastAPI(title="Viagens API")

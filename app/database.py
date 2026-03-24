@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import  sessionmaker, declarative_base
-from os import getenv
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,7 +9,7 @@ SERVER_URL = "mysql+pymysql://root:admin@localhost"
 engine_server = create_engine(SERVER_URL)
 
 with engine_server.connect()as conn:
-    conn.execute(text(f"CREATE DATABASE IF NOT EXISTS viagens_api"))
+    conn.execute(text("CREATE DATABASE IF NOT EXISTS viagens_api"))
     conn.commit()
 
 

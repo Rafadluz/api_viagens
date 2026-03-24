@@ -1,11 +1,16 @@
+from datetime import date, datetime
 from pydantic import BaseModel
 from typing import Optional
+
 
 
 class UsuarioSchema(BaseModel):
     nome: str
     email: str
     senha: str
+    cpf: int
+    data_nascimento: date
+    usuario: str
 
     class Config:
         from_attributes = True
@@ -13,20 +18,21 @@ class UsuarioSchema(BaseModel):
 
 
 class PassageiroSchema(BaseModel):
-    preferencias: Optional[str] = None
-    id_usuario: Optional[int] = None 
+    media_avaliacao: Optional[int] = None
     class Config:
         from_attributes = True
 
 
 
 class MotoristaSchema(BaseModel):
-    cnh: str
+    cnh: int
     experiencia: Optional[str] = None
-    id_usuario: Optional[int] = None
-
+    media_avaliacao: Optional[int] = None
     class Config:
         from_attributes = True
+
+
+        
 
 
 class ModeloVeiculoSchema(BaseModel):
@@ -85,6 +91,9 @@ class AvaliacaoSchema(BaseModel):
     comentario: Optional[str] = None
     id_servico: int
     id_passageiro: int
+    nota_passageiro: int
+    nota_motorista: int
+    datahora_limite: datetime
 
     class Config:
         from_attributes = True
@@ -101,4 +110,4 @@ class PagamentoSchema(BaseModel):
 
 
 class MetodoPagamentoSchema(BaseModel):
-    tipo: str # ex: "cartão
+    tipo: str

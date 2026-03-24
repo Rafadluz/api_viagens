@@ -9,10 +9,11 @@ class UsuarioModel(Base):
     nome = Column(String(200), nullable=False)
     cpf = Column(CHAR(11), unique=True, nullable=False)
     data_nascimento = Column(Date, nullable=False)
-    idade = Column(SmallInteger, nullable=False)
     senha = Column(CHAR(64), nullable=False)
     email = Column(String(200), unique=True, nullable=False)
     usuario = Column(String(50), unique=True, nullable=False)
+
+    
 
 
 class PassageiroModel(Base):
@@ -29,6 +30,7 @@ class MotoristaModel(Base):
     id_motorista = Column(BigInteger, primary_key=True, autoincrement=True)
     id_usuario = Column(BigInteger, nullable=False)
     media_avaliacao = Column(DECIMAL(3, 2))
+    experiencia = Column(String(100))
     cnh = Column(BigInteger, nullable=False)
 
 
@@ -78,6 +80,8 @@ class AvaliacaoModel(Base):
     __tablename__ = "avaliacao"
 
     id_avaliacao = Column(BigInteger, primary_key=True, autoincrement=True)
+    comentario = Column(String(45), nullable=False)
+    nota = Column(SmallInteger, nullable=False)
     nota_passageiro = Column(SmallInteger, nullable=False)
     nota_motorista = Column(SmallInteger, nullable=False)
     datahora_limite = Column(DateTime, nullable=False)
@@ -87,8 +91,9 @@ class ServicoModel(Base):
     __tablename__ = "servico"
 
     id_servico = Column(Integer, primary_key=True, autoincrement=True)
-    nome_servico = Column(String(50), nullable=False)
-    id_classe_minima = Column(Integer, nullable=False)
+    descricao = Column(String(50), nullable=False)
+    preco = Column(DECIMAL(10, 2), nullable=False)
+    id_motorista = Column(BigInteger, nullable=False)
 
 
 
